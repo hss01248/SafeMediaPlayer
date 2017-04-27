@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:padding="10dp"
+    android:orientation="vertical" >
+
+    <Button
+        android:id="@+id/btn_start"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:text="Start" />
+    <Button
+        android:id="@+id/btn_pause"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:text="pause" />
+    <Button
+        android:id="@+id/btn_resume"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:text="resume" />
+
+    <Button
+        android:id="@+id/btn_stop"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:text="Stop" />
+
+    <Button
+        android:id="@+id/btn_release"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:text="release" />
+    <LinearLayout
+        android:layout_marginTop="15dp"
+        android:layout_marginBottom="15dp"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:id="@+id/tv_progress"
+            android:layout_width="wrap_content"
+            android:minWidth="50dp"
+            android:layout_height="wrap_content" />
+        <SeekBar
+            android:id="@+id/seekbar"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content" />
+        <TextView
+            android:id="@+id/tv_size"
+            android:layout_width="wrap_content"
+            android:minWidth="50dp"
+            android:layout_height="wrap_content" />
+    </LinearLayout>
+
+
+
+
+
+
+
+    <Button
+        android:id="@+id/btn_play_url1"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:text="play url1" />
+
+    <Button
+        android:id="@+id/btn_play_url2"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:text="play url2" />
+    <Button
+        android:id="@+id/btn_play_file"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:text="play file" />
+
+</LinearLayout>
