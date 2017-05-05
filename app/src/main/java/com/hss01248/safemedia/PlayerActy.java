@@ -62,7 +62,7 @@ public class PlayerActy extends Activity {
     }
 
     private void initPlayer() {
-        manager =  AudioPlayerManager.get();
+        manager =  AudioPlayerManager.get(getApplicationContext());
         manager.setDataSource(url1)
                 .setStartPosition(30000)
                 .setCallback(ProxyTools.getShowMethodInfoProxy(new PlayerCallback() {
@@ -175,5 +175,11 @@ public class PlayerActy extends Activity {
                 manager.start(file);
                 break;
         }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        manager.releaseEveryThing();
     }
 }

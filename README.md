@@ -8,13 +8,14 @@ a wrap for MediaPlayer to make it easy and safe to use
 * only one java class + two interfaces 
 * no need to care about  the state
 * no crash any more 
+* automatically handle the OnAudioFocusChangeListener and headset/bluetooth plug out event 
 
 # usage
 
 ## init
 
 ```
-manager =  AudioPlayerManager.get();
+manager =  AudioPlayerManager.get(appcontext);
 manager.setDataSource(url1)// for audio ,the datasource class type is string
 		.setCallback(callback)
 		.setStartPosition(60000)//start playing at 60s
@@ -31,8 +32,8 @@ void pause();
 void resume();
 void stop();
 void seekTo(int duration);
-void release();
-
+void release();//release the mediaplayer ,but remains the AudioPlayerManager
+void releaseEveryThing();//release the mediaplayer and the AudioPlayerManager instance, and unregisterHeadsetPlugReceiver.
 
 ```
 

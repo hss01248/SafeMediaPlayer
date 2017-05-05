@@ -1,6 +1,7 @@
 package com.hss01248.mediaplayer;
 
 import android.content.Context;
+import android.content.IntentFilter;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.net.Uri;
@@ -9,6 +10,8 @@ import android.os.Looper;
 
 import java.io.FileDescriptor;
 import java.io.IOException;
+
+import static android.media.AudioManager.AUDIOFOCUS_LOSS_TRANSIENT;
 
 /**
  * Created by Administrator on 2017/4/27 0027.
@@ -30,15 +33,51 @@ public class AudioPlayerManager implements IPlayer{
     int seekto;
     private  Handler handler;
     private  Runnable runnable;
+    AudioManager am;
+    AudioManager.OnAudioFocusChangeListener listener;
+    int stateBeforeFocusChange;
+    BecomingNoisyReceiver becomingNoisyReceiver;
+
+
 
     private AudioPlayerManager(){
 
 
     }
 
-    public static AudioPlayerManager get(){
+    public static AudioPlayerManager get(Context context){
         if(instance ==null){
             instance = new AudioPlayerManager();
+            instance.context = context;
+            instance.am = (AudioManager) context.getSystemService(Context.AUDIO_SERVICE);
+            instance.listener = new AudioManager.OnAudioFocusChangeListener() {
+                @Override
+                public void onAudioFocusChange(int focusChange) {
+                    if (focusChange == AUDIOFOCUS_LOSS_TRANSIENT){
+                        //Log.e("dd"," AUDIOFOCUS_LOSS_TRANSIENT ---------------------");
+                        if(instance.state == State.playing){
+                            instance.stateBeforeFocusChange = State.playing;
+                        }
+                        instance.pause();
+                        // Pause playback
+                    } else if (focusChange == AudioManager.AUDIOFOCUS_GAIN) {
+                        //Log.e("dd"," AUDIOFOCUS_GAIN ---------------------");
+                        if(instance.stateBeforeFocusChange == State.playing){
+                            instance.resume();
+                        }
+
+                        // Resume playback
+                    } else if (focusChange == AudioManager.AUDIOFOCUS_LOSS) {
+                        //Log.e("dd"," AUDIOFOCUS_LOSS ---------------------");
+                        //am.unregisterMediaButtonEventReceiver(RemoteControlReceiver);
+
+                        instance.stop();
+                        // Stop playback
+                    }
+
+                }
+            };
+            instance.registerHeadsetPlugReceiver();
         }
         return instance;
     }
@@ -186,6 +225,14 @@ public class AudioPlayerManager implements IPlayer{
             player.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
                 @Override
                 public void onPrepared(MediaPlayer mp) {
+
+                    int result = am.requestAudioFocus(listener,
+                            // Use the music stream.
+                            AudioManager.STREAM_MUSIC,
+                            // Request permanent focus.
+                            AudioManager.AUDIOFOCUS_GAIN);
+
+
                     state = State.prepared;
                     callback.onGetMaxDuration(mp.getDuration());
                     mp.start();
@@ -266,6 +313,7 @@ public class AudioPlayerManager implements IPlayer{
             state = State.stopped;
             player.stop();
             callback.onStop(dataSource,instance);
+            instance.am.abandonAudioFocus(instance.listener);
         }
     }
 
@@ -282,12 +330,22 @@ public class AudioPlayerManager implements IPlayer{
 
     @Override
     public void release() {
+        stop();
         if( state == State.stopped){
             player.release();
             player = null;
             state = State.realeased;
             callback.onRelease(dataSource,instance);
         }
+    }
+
+    /**
+     * 释放所有资源,连instance都置为空
+     */
+    public void releaseEveryThing(){
+        release();
+        unregisterHeadsetPlugReceiver();
+        instance=null;
     }
 
     public interface State{
@@ -303,6 +361,27 @@ public class AudioPlayerManager implements IPlayer{
         int error =8;
         int realeased =9;
     }
+
+
+    /**
+     * 参考: http://blog.csdn.net/mu399/article/details/38516039
+     * AudioManager.ACTION_AUDIO_BECOMING_NOISY: 只是针对有线耳机，或者无线耳机的手机断开连接的事件,无延迟.但监听不到有线耳机和蓝牙耳机的接入.
+     */
+    private   void registerHeadsetPlugReceiver() {
+         instance.becomingNoisyReceiver = new BecomingNoisyReceiver();
+        IntentFilter intentFilter = new IntentFilter(AudioManager.ACTION_AUDIO_BECOMING_NOISY);
+        instance.context.registerReceiver(instance.becomingNoisyReceiver, intentFilter);
+    }
+
+    private   void unregisterHeadsetPlugReceiver(){
+        if(instance.becomingNoisyReceiver !=null){
+            instance.context.unregisterReceiver(instance.becomingNoisyReceiver);
+        }
+    }
+
+
+
+
 
 
 

@@ -1,8 +1,8 @@
 <component name="libraryTable">
   <library name="timber-4.5.1">
     <CLASSES>
-      <root url="file://$USER_HOME$/.android/build-cache/999d992e73eec477a25fccab699c4f8168df637a/output/res" />
-      <root url="jar://$USER_HOME$/.android/build-cache/999d992e73eec477a25fccab699c4f8168df637a/output/jars/classes.jar!/" />
+      <root url="jar://$USER_HOME$/.android/build-cache/2a329ff77dc414ed2f18640e3edc5bd107d75352/output/jars/classes.jar!/" />
+      <root url="file://$USER_HOME$/.android/build-cache/2a329ff77dc414ed2f18640e3edc5bd107d75352/output/res" />
     </CLASSES>
     <JAVADOC />
     <SOURCES>
