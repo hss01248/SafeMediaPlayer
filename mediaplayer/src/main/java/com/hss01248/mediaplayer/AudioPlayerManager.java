@@ -7,6 +7,7 @@ import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Handler;
 import android.os.Looper;
+import android.util.Log;
 
 import java.io.FileDescriptor;
 import java.io.IOException;
@@ -53,6 +54,10 @@ public class AudioPlayerManager implements IPlayer{
             instance.listener = new AudioManager.OnAudioFocusChangeListener() {
                 @Override
                 public void onAudioFocusChange(int focusChange) {
+                    if(instance == null){
+                        Log.w("AudioPlayerManager","instance == null");
+                        return;
+                    }
                     if (focusChange == AUDIOFOCUS_LOSS_TRANSIENT){
                         //Log.e("dd"," AUDIOFOCUS_LOSS_TRANSIENT ---------------------");
                         if(instance.state == State.playing){

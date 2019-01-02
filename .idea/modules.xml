@@ -3,8 +3,11 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/SafeMediaPlayer.iml" filepath="$PROJECT_DIR$/SafeMediaPlayer.iml" />
+      <module fileurl="file://D:\projects\Android\github\hss01248\SafeMediaPlayer\SafeMediaPlayer.iml" filepath="D:\projects\Android\github\hss01248\SafeMediaPlayer\SafeMediaPlayer.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
+      <module fileurl="file://D:\projects\Android\github\hss01248\SafeMediaPlayer\app\app.iml" filepath="D:\projects\Android\github\hss01248\SafeMediaPlayer\app\app.iml" />
       <module fileurl="file://$PROJECT_DIR$/mediaplayer/mediaplayer.iml" filepath="$PROJECT_DIR$/mediaplayer/mediaplayer.iml" />
+      <module fileurl="file://D:\projects\Android\github\hss01248\SafeMediaPlayer\mediaplayer\mediaplayer.iml" filepath="D:\projects\Android\github\hss01248\SafeMediaPlayer\mediaplayer\mediaplayer.iml" />
     </modules>
   </component>
 </project>
