@@ -18,9 +18,9 @@ import static android.media.AudioManager.AUDIOFOCUS_LOSS_TRANSIENT;
  * Created by Administrator on 2017/4/27 0027.
  */
 
-public class AudioPlayerManager implements IPlayer{
+public class AudioPlayerManager implements IPlayer {
 
-    private  MediaPlayer player;
+    private MediaPlayer player;
 
     public int getState() {
         return state;
@@ -32,12 +32,16 @@ public class AudioPlayerManager implements IPlayer{
     private Object dataSource;//string,Uri,filedesciptor
     Context context;
     int seekto;
-    private  Handler handler;
-    private  Runnable runnable;
+    private Handler handler;
+    private Runnable runnable;
     AudioManager am;
     AudioManager.OnAudioFocusChangeListener listener;
     int stateBeforeFocusChange;
     BecomingNoisyReceiver becomingNoisyReceiver;
+
+
+
+    private boolean listeneAudioFocus;
 
 
 
@@ -54,8 +58,12 @@ public class AudioPlayerManager implements IPlayer{
             instance.listener = new AudioManager.OnAudioFocusChangeListener() {
                 @Override
                 public void onAudioFocusChange(int focusChange) {
+                    Log.d("AudioPlayerManager","onAudioFocusChange:"+focusChange);
                     if(instance == null){
                         Log.w("AudioPlayerManager","instance == null");
+                        return;
+                    }
+                    if(!instance.listeneAudioFocus){
                         return;
                     }
                     if (focusChange == AUDIOFOCUS_LOSS_TRANSIENT){
@@ -87,6 +95,10 @@ public class AudioPlayerManager implements IPlayer{
         return instance;
     }
 
+    public AudioPlayerManager setListeneAudioFocus(boolean listeneAudioFocus) {
+        this.listeneAudioFocus = listeneAudioFocus;
+        return this;
+    }
 
     @Deprecated
     public AudioPlayerManager setContext(Context context){
@@ -214,7 +226,7 @@ public class AudioPlayerManager implements IPlayer{
         player.setAudioStreamType(AudioManager.STREAM_MUSIC);
         //Logger.object(dataSource);
         try {
-            if(dataSource instanceof String ){
+            if(dataSource instanceof String){
                 String str = (String) dataSource;
                 player.setDataSource(str);
             }else if(dataSource instanceof FileDescriptor){
@@ -320,7 +332,8 @@ public class AudioPlayerManager implements IPlayer{
             state = State.stopped;
             player.stop();
             callback.onStop(dataSource,instance);
-            instance.am.abandonAudioFocus(instance.listener);
+            am.abandonAudioFocus(null);
+
         }
     }
 
@@ -338,9 +351,11 @@ public class AudioPlayerManager implements IPlayer{
     @Override
     public void release() {
         stop();
-        if( state == State.stopped){
-            player.release();
-            player = null;
+        if( state == State.stopped || state == State.idle || state == State.playCompleted){
+            if(player != null){
+                player.release();
+                player = null;
+            }
             state = State.realeased;
             callback.onRelease(dataSource,instance);
         }
