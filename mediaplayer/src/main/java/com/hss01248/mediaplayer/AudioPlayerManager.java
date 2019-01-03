@@ -141,7 +141,8 @@ public class AudioPlayerManager implements IPlayer{
     @Override
     public void start(Object newDataSource) {
         //seekto =0;//对上一次的清零
-        boolean isOld = newDataSource==null || newDataSource.equals(dataSource)  ;
+        boolean isOld = newDataSource==null || newDataSource.equals(dataSource)  ;//这里有问题,如果是同一个音频,确实需要播两遍,第二遍会报错.
+        //boolean isSameAsOldDataSource = newDataSource != null && newDataSource.equals(dataSource);
         if(!isOld){
             dataSource = newDataSource;
         }else {
@@ -178,9 +179,10 @@ public class AudioPlayerManager implements IPlayer{
                 }
                 break;
             case State.playCompleted:
-                if(!isOld){
-                    player.reset();
-                }
+                //if(!isOld){
+                //如果老的播完了,那么就重播一遍,一样的url,也需要reset
+                player.reset();
+                //}
                 break;
             case State.stopped:
                 if(!isOld){
@@ -379,7 +381,7 @@ public class AudioPlayerManager implements IPlayer{
     }
 
     private   void unregisterHeadsetPlugReceiver(){
-        if(instance.becomingNoisyReceiver !=null){
+        if(instance !=null && instance.becomingNoisyReceiver !=null){
             instance.context.unregisterReceiver(instance.becomingNoisyReceiver);
         }
     }
